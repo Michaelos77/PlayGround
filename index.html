@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#10251c" />
+  <title>GREEN HELL — Amazon Survival</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2310251c'/%3E%3Cpath d='M32 9C19 19 13 30 18 42c3 7 9 10 14 11-2-9-1-18 5-28-1 9-1 17 2 25 8-5 12-13 9-22C45 17 37 12 32 9Z' fill='%23c9dd91'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./style.css" />
+  <script type="importmap">
+    {"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js"}}
+  </script>
+</head>
+<body>
+  <main id="game" aria-label="Amazon rainforest survival game">
+    <canvas id="world"></canvas>
+    <div class="vignette"></div>
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">✳</span><div><b>GREEN HELL</b><small>AMAZON FIELD LOG · 01</small></div></div>
+      <div class="day-card"><span class="sun-icon">☼</span><div><small>DAY <b id="day-number">01</b></small><strong id="clock">06:20</strong></div></div>
+      <button id="sound-button" class="icon-button" aria-label="Toggle ambient sound" title="Toggle sound">♫</button>
+    </header>
+    <section class="mission-card glass">
+      <div class="eyebrow"><span class="live-dot"></span> FIELD OBJECTIVE</div>
+      <h1 id="mission-title">Make it to daybreak.</h1>
+      <p id="mission-copy">Stay alive through three days in the rainforest. Find clean water and forage to keep going.</p>
+      <div class="progress-track"><i id="mission-progress"></i></div>
+      <div class="progress-label"><span id="progress-time">DAY 1 OF 3</span><span id="progress-percent">0%</span></div>
+    </section>
+    <section class="vitals glass" aria-label="Survival status">
+      <div class="vital-row"><span class="vital-icon heart">♥</span><div class="vital-body"><div class="vital-label"><span>HEALTH</span><b id="health-value">100</b></div><div class="meter"><i id="health-meter" class="health-fill"></i></div></div></div>
+      <div class="vital-row"><span class="vital-icon water">◒</span><div class="vital-body"><div class="vital-label"><span>HYDRATION</span><b id="water-value">100</b></div><div class="meter"><i id="water-meter" class="water-fill"></i></div></div></div>
+      <div class="vital-row"><span class="vital-icon food">◉</span><div class="vital-body"><div class="vital-label"><span>NOURISHMENT</span><b id="food-value">100</b></div><div class="meter"><i id="food-meter" class="food-fill"></i></div></div></div>
+      <div class="vital-row energy-row"><span class="vital-icon energy">ϟ</span><div class="vital-body"><div class="vital-label"><span>STAMINA</span><b id="stamina-value">100</b></div><div class="meter"><i id="stamina-meter" class="stamina-fill"></i></div></div></div>
+    </section>
+    <section class="inventory glass">
+      <div class="panel-heading"><span>PACK</span><span class="pack-weight" id="pack-weight">0 / 12</span></div>
+      <div class="inventory-grid">
+        <div class="item-slot"><span class="item-emoji">⌁</span><span class="item-name">Sticks</span><b id="sticks-count">0</b></div>
+        <div class="item-slot"><span class="item-emoji stone-emoji">◆</span><span class="item-name">Stones</span><b id="stones-count">0</b></div>
+        <div class="item-slot"><span class="item-emoji berry-emoji">●</span><span class="item-name">Berries</span><b id="berries-count">0</b></div>
+      </div>
+      <button id="craft-button" class="craft-button" disabled><span>✦</span> BUILD LEAN-TO <small>3 sticks · 2 stones</small></button>
+      <p class="shelter-note" id="shelter-note">A shelter makes the long nights safer.</p>
+    </section>
+    <div class="interaction" id="interaction"><span class="keycap">E</span><span id="interaction-text">Collect fallen branches</span></div>
+    <aside class="toast" id="toast" role="status"></aside>
+    <div class="crosshair"><i></i><i></i></div>
+    <div class="help-pill"><span>WASD</span> MOVE <i>·</i> <span>SHIFT</span> SPRINT <i>·</i> <span>E</span> INTERACT <i>·</i> <span>F</span> EAT BERRIES</div>
+    <div class="mobile-controls" id="mobile-controls">
+      <div class="joystick" id="joystick"><div class="joy-knob" id="joy-knob"></div></div>
+      <div class="mobile-actions"><button id="mobile-eat" aria-label="Eat berries">🍒</button><button id="mobile-interact" aria-label="Interact">E</button><button id="mobile-sprint" aria-label="Sprint">↟</button></div>
+    </div>
+    <div class="overlay" id="start-overlay">
+      <div class="overlay-card">
+        <div class="overlay-kicker"><span>FIELD SURVIVAL SIMULATION</span><span>·</span><span>UPPER AMAZON BASIN</span></div>
+        <div class="title-flower">✳</div>
+        <h2>GREEN<br><em>HELL</em></h2>
+        <p class="intro">Alone beneath the canopy. The forest is alive—and so is every choice you make.</p>
+        <div class="briefing"><span class="brief-icon">⌖</span><p><b>YOUR OBJECTIVE</b><br>Survive three days. Keep hydrated, forage for food, and build a lean-to before nightfall.</p></div>
+        <button id="start-button" class="primary-button">ENTER THE RAINFOREST <span>→</span></button>
+        <div class="control-hint">WASD to move <i>·</i> Mouse to look <i>·</i> E to interact</div>
+      </div>
+    </div>
+    <div class="overlay end-overlay hidden" id="end-overlay">
+      <div class="overlay-card end-card"><div class="title-flower" id="end-icon">✳</div><div class="overlay-kicker">FIELD REPORT · FINAL</div><h2 id="end-title">SURVIVOR</h2><p class="intro" id="end-copy"></p><button id="restart-button" class="primary-button">TRY AGAIN <span>↻</span></button></div>
+    </div>
+    <div class="loading" id="loading">GROWING THE RAINFOREST…</div>
+  </main>
+  <script type="module" src="./src/game.js"></script>
+</body>
+</html>
